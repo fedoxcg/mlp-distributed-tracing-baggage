@@ -1,0 +1,78 @@
+{
+  "uuid": "1c901f01-6ade-49fe-ab53-e7d0f8f2b754",
+  "lastMigration": 27,
+  "name": "Eshop logistic transport",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3001,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "fa07c4c7-79ba-4fd3-93d4-6cffec7c8697",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "transport",
+      "responses": [
+        {
+          "uuid": "228d4b85-a310-4c35-b7b9-c96a911decd9",
+          "body": "{\n  \"httpStatus\": 201,\n  \"status\": \"PREPARATION\",\n  \"errors\": null\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "fa07c4c7-79ba-4fd3-93d4-6cffec7c8697"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": []
+}

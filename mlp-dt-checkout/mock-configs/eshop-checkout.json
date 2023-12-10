@@ -1,0 +1,178 @@
+{
+  "uuid": "49e1f810-1d76-4a0b-8192-68703e198ff1",
+  "lastMigration": 28,
+  "name": "Eshop Checkout",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "787635cd-cba2-4e92-b58b-a00816811b38",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "createOrder",
+      "responses": [
+        {
+          "uuid": "192a79d2-afce-4cd8-8ba2-ac6b268e403e",
+          "body": "{\n  \"httpStatusCode\": 201,\n  \"order\": {\n    \"orderId\": \"3c31ccd5-eb7c-4b51-8780-a7d48398024a\",\n    \"orderDate\": \"2023-10-19T17:22:05.160570500\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": true,
+          "default": true,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "6b3b953d-ae26-41b3-898d-75cc24e7901e",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "health",
+      "responses": [
+        {
+          "uuid": "498fb38a-f762-4a9a-88a5-61f1c2192706",
+          "body": "{status: \"UP\"}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "3c3b2cfc-5bc3-4a7b-a4f1-7f22eadcd21f",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "billing/payment",
+      "responses": [
+        {
+          "uuid": "f7c28ed1-e75b-4269-9232-f53b4c283a69",
+          "body": "{\n  \"httpStatusCode\": 200,\n  \"paymentReceipt\": {\n    \"amount\": 1000.00,\n    \"date\": \"2023-10-19T17:22:05.160570500\",\n    \"status\": \"OK\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "f942ac95-18cf-4d27-b505-e6301a1ff790",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "delivery/arrangeDelivery",
+      "responses": [
+        {
+          "uuid": "76f12d8e-289c-4bef-b207-cb06a2f8319c",
+          "body": "{\n  \"httpStatusCode\": 200,\n  \"deliveryArrangement\": {\n    \"courier\": \"SDA\",\n    \"status\": \"PREPARED\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "787635cd-cba2-4e92-b58b-a00816811b38"
+    },
+    {
+      "type": "route",
+      "uuid": "6b3b953d-ae26-41b3-898d-75cc24e7901e"
+    },
+    {
+      "type": "route",
+      "uuid": "3c3b2cfc-5bc3-4a7b-a4f1-7f22eadcd21f"
+    },
+    {
+      "type": "route",
+      "uuid": "f942ac95-18cf-4d27-b505-e6301a1ff790"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": []
+}

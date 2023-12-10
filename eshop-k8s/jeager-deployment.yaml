@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jeager
+  labels:
+    app: jeager
+spec:
+  selector:
+    matchLabels:
+      app: jeager
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: jeager
+    spec:
+      containers:
+        - name: jeager
+          image: "rancher/jaegertracing-all-in-one:1.20.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: p1
+              containerPort: 6831
+              protocol: UDP
+            - name: p2
+              containerPort: 6832
+              protocol: UDP
+            - name: p3
+              containerPort: 5778
+              protocol: TCP
+            - name: p4
+              containerPort: 16686
+              protocol: TCP
+            - name: p5
+              containerPort: 4317
+              protocol: TCP
+            - name: p6
+              containerPort: 4318
+              protocol: TCP
+            - name: p7
+              containerPort: 14250
+              protocol: TCP
+            - name: p8
+              containerPort: 14268
+              protocol: TCP
+            - name: p9
+              containerPort: 14269
+              protocol: TCP
+            - name: p10
+              containerPort: 9411
+              protocol: TCP
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 200m
+          livenessProbe:
+            failureThreshold: 3
+            successThreshold: 1
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 10
+            httpGet:
+              port: 14269
+              scheme: HTTP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 10
+            httpGet:
+              port: 14269
+              scheme: HTTP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+spec:
+  type: ClusterIP
+  selector:
+    app: jeager
+  ports:
+    - protocol: TCP
+      port: 14268
+      targetPort: 14268
+    - protocol: TCP
+      port: 16686
+      targetPort: 16686

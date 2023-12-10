@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eshop-delivery
+  labels:
+    app: delivery
+spec:
+  selector:
+    matchLabels:
+      app: delivery
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: delivery
+    spec:
+      containers:
+        - name: delivery
+          image: "fedox/liveproject-eshop-delivery:1.1.1"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAEGER_ENDPOINT
+              value: http://jaeger:14268/api/traces
+            - name: LOGISTIC_TRANSPORT_ENDPOINT
+              value: http://eshop-logistics:8580/transport
+          ports:
+            - name: eshop-delivery
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 200m
+          livenessProbe:
+            failureThreshold: 3
+            successThreshold: 1
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            timeoutSeconds: 20
+            httpGet:
+              path: /healthcheck
+              port: 8080
+              scheme: HTTP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 20
+            httpGet:
+              path: /healthcheck
+              port: 8080
+              scheme: HTTP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshop-delivery
+spec:
+  type: ClusterIP
+  selector:
+    app: delivery
+  ports:
+    - protocol: TCP
+      port: 8480
+      targetPort: 8080

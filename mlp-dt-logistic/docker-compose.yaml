@@ -1,0 +1,39 @@
+services:
+  eshop-logistics:
+    image: fedox/liveproject-eshop-logistic:latest
+    container_name: eshop-billing
+    environment:
+      PROJECT_VERSION: 1.1.0
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - 8580:8080
+    networks:
+      - eshop-logistics-net
+    depends_on:
+      - jaeger
+
+  jaeger:
+    image: rancher/jaegertracing-all-in-one:1.20.0
+    container_name: jaeger
+    ports:
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 4317:4317
+      - 4318:4318
+      - 14250:14250
+      - 14268:14268
+      - 14269:14269
+      - 9411:9411
+    networks:
+      - eshop-logistics-net
+    healthcheck:
+      test: ["CMD", "curl", "-X", "GET", "localhost:14269"] # jaeger collector health check ping
+      interval: 1s
+      timeout: 3s
+      retries: 60
+
+networks:
+  eshop-logistics-net:
+    driver: bridge

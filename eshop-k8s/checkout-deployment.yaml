@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eshop-checkout
+  labels:
+    app: checkout
+spec:
+  selector:
+    matchLabels:
+      app: checkout
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: checkout
+    spec:
+      containers:
+        - name: checkout
+          image: "fedox/liveproject-eshop-checkout:1.1.1"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAEGER_ENDPOINT
+              value: http://jaeger:14268/api/traces
+            - name: ORDER_SERVICE_ENDPOINT
+              value: http://eshop-inventory:8280/createOrder
+            - name: BILLING_PAYMENT_SERVICE_ENDPOINT
+              value: http://eshop-billing:8380/payment
+            - name: ARRANGE_DELIVERY_ENDPOINT
+              value: http://eshop-delivery:8480/arrangeDelivery
+          ports:
+            - name: eshop-checkout
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 200m
+          livenessProbe:
+            failureThreshold: 3
+            successThreshold: 1
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            timeoutSeconds: 20
+            httpGet:
+              path: /healthcheck
+              port: 8080
+              scheme: HTTP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 20
+            httpGet:
+              path: /healthcheck
+              port: 8080
+              scheme: HTTP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshop-checkout
+spec:
+  type: NodePort
+  selector:
+    app: checkout
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080

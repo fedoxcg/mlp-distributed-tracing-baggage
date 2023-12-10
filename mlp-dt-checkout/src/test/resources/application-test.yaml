@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+app:
+  version: ${PROJECT_VERSION}
+
+tracer:
+  trace:
+    name: "EShop"
+
+services:
+  order:
+    endpoint: http://localhost:8082/createOrder

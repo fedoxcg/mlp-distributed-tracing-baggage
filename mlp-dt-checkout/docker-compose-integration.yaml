@@ -1,0 +1,115 @@
+services:
+  eshop-checkout:
+    image: fedox/liveproject-eshop-checkout:latest
+    container_name: eshop-checkout
+    environment:
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      ORDER_SERVICE_ENDPOINT: http://eshop-inventory:8080/createOrder
+      BILLING_PAYMENT_SERVICE_ENDPOINT: http://eshop-billing:8080/payment
+      ARRANGE_DELIVERY_ENDPOINT: http://eshop-delivery:8080/arrangeDelivery
+    ports:
+      - 8180:8080
+    networks:
+      - eshop-net
+    depends_on:
+      - jaeger
+      - eshop-billing
+      - eshop-inventory
+      - eshop-logistics
+      - eshop-delivery
+
+  eshop-billing:
+    image: fedox/liveproject-eshop-billing:latest
+    container_name: eshop-billing
+    environment:
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - 8380:8080
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8080/healthcheck"]
+      interval: 1s
+      timeout: 3s
+      retries: 60
+    networks:
+      - eshop-net
+    depends_on:
+      - jaeger
+
+  eshop-inventory:
+    image: fedox/liveproject-eshop-inventory:latest
+    container_name: eshop-inventory
+    environment:
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - 8280:8080
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8080/healthcheck" ]
+      interval: 1s
+      timeout: 3s
+      retries: 60
+    networks:
+      - eshop-net
+    depends_on:
+      - jaeger
+
+  eshop-logistics:
+    image: fedox/liveproject-eshop-logistic:latest
+    container_name: eshop-logistics
+    environment:
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+    ports:
+      - 8580:8080
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8080/healthcheck" ]
+      interval: 1s
+      timeout: 3s
+      retries: 60
+    networks:
+      - eshop-net
+    depends_on:
+      - jaeger
+
+  eshop-delivery:
+    image: fedox/liveproject-eshop-delivery:latest
+    container_name: eshop-delivery
+    environment:
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      LOGISTIC_TRANSPORT_ENDPOINT: http://eshop-logistics:8080/transport
+    ports:
+      - 8084:8080
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8080/healthcheck" ]
+      interval: 1s
+      timeout: 3s
+      retries: 60
+    networks:
+      - eshop-net
+    depends_on:
+      - jaeger
+      - eshop-logistics
+
+  jaeger:
+    image: rancher/jaegertracing-all-in-one:1.20.0
+    container_name: jaeger
+    ports:
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 4317:4317
+      - 4318:4318
+      - 14250:14250
+      - 14268:14268
+      - 14269:14269
+      - 9411:9411
+    networks:
+      - eshop-net
+    healthcheck:
+      test: ["CMD", "curl", "-X", "GET", "localhost:14269"] # jaeger collector health check ping
+      interval: 1s
+      timeout: 3s
+      retries: 60
+
+networks:
+  eshop-net:
+    driver: bridge

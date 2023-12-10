@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eshop-inventory
+  labels:
+    app: inventory
+spec:
+  selector:
+    matchLabels:
+      app: inventory
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: inventory
+    spec:
+      containers:
+        - name: inventory
+          image: "fedox/liveproject-eshop-inventory:1.1.1"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAEGER_ENDPOINT
+              value: http://jaeger:14268/api/traces
+          ports:
+            - name: eshop-inventory
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 200m
+          livenessProbe:
+            failureThreshold: 3
+            successThreshold: 1
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            timeoutSeconds: 20
+            httpGet:
+              path: /healthcheck
+              port: 8080
+              scheme: HTTP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 20
+            httpGet:
+              path: /healthcheck
+              port: 8080
+              scheme: HTTP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eshop-inventory
+spec:
+  type: ClusterIP
+  selector:
+    app: inventory
+  ports:
+    - protocol: TCP
+      port: 8280
+      targetPort: 8080

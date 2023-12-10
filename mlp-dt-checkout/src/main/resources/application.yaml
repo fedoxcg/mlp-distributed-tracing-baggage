@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+app:
+  version: ${PROJECT_VERSION}
+
+tracer:
+  trace:
+    name: "EShop"
+
+logging:
+  level:
+    com.fedox.study.tracing.checkout: INFO
+
+services:
+  order:
+    creationEndpoint: ${ORDER_SERVICE_ENDPOINT}
+  billing:
+    paymentEndpoint: ${BILLING_PAYMENT_SERVICE_ENDPOINT}
+  delivery:
+    arrangeDeliveryEndpoint: ${ARRANGE_DELIVERY_ENDPOINT}
